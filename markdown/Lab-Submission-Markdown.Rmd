@@ -96,10 +96,10 @@ if (require("naivebayes")) {
 } else {
   install.packages("naivebayes", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
-}
-if (!is.element("mlbench", installed.packages()[, 1])) {
      install.packages("mlbench", dependencies = TRUE)  #nolint
-  }
+  
+}
+if (!is.element("mlbench", installed.packages()[, 1])) {}
   require("mlbench") #nolint
 ```
 
