@@ -14,6 +14,18 @@ naive
     - [4.a. e1071 Naive Bayes model and test results using a confusion
       matrix
       —-](#4a-e1071-naive-bayes-model-and-test-results-using-a-confusion-matrix--)
+    - [5.a. SVM Classifier using 5-fold cross validation with 3 reps
+      —-](#5a-svm-classifier-using-5-fold-cross-validation-with-3-reps--)
+    - [5.b. Test the trained SVM model using the testing dataset
+      —-](#5b-test-the-trained-svm-model-using-the-testing-dataset--)
+    - [5.c. View a summary of the model and view the confusion matrix
+      —-](#5c-view-a-summary-of-the-model-and-view-the-confusion-matrix--)
+  - [6. Classification: Naive Bayes with Leave One Out Cross
+    Validation—-](#6-classification-naive-bayes-with-leave-one-out-cross-validation-)
+    - [6.b. Test the trained model using the testing dataset
+      ====](#6b-test-the-trained-model-using-the-testing-dataset-)
+    - [6.c. View the confusion matrix
+      ====](#6c-view-the-confusion-matrix-)
 
 # Student Details
 
@@ -196,17 +208,17 @@ predictions_nb_caret <- predict(PimaIndiansDiabetes_model_nb_caret, PimaIndiansD
 print(predictions_nb_e1071)
 ```
 
-    ##   [1] pos pos neg neg pos neg pos neg pos pos neg neg neg neg pos neg neg neg
-    ##  [19] neg neg neg neg neg neg neg neg pos neg neg neg neg pos neg neg neg pos
-    ##  [37] pos pos pos pos neg neg neg neg neg pos neg neg neg pos neg neg neg neg
-    ##  [55] neg neg pos neg pos neg neg neg pos neg neg pos neg pos neg neg neg pos
-    ##  [73] neg pos pos neg neg neg pos neg neg neg neg pos neg neg pos pos pos pos
-    ##  [91] neg neg neg neg neg neg neg neg pos pos neg pos pos pos pos neg pos neg
-    ## [109] pos neg pos neg neg neg neg neg neg pos pos neg neg neg neg pos pos neg
-    ## [127] pos pos neg neg neg pos neg neg neg neg pos neg pos neg neg neg pos neg
-    ## [145] neg pos neg neg neg neg pos pos neg neg neg neg neg neg neg pos pos pos
-    ## [163] pos neg neg neg pos pos neg neg neg pos pos neg pos neg neg pos neg neg
-    ## [181] neg pos neg pos neg pos pos neg pos neg pos pos
+    ##   [1] neg neg pos neg pos neg neg neg neg neg pos pos neg pos neg neg neg neg
+    ##  [19] neg neg neg pos pos neg neg neg pos neg neg neg pos neg pos neg neg pos
+    ##  [37] neg neg pos neg neg neg neg neg neg pos neg neg neg neg neg neg neg neg
+    ##  [55] neg neg neg neg neg neg neg neg neg pos neg neg neg neg pos pos neg neg
+    ##  [73] pos neg neg neg neg neg neg pos neg pos pos neg pos neg neg neg neg neg
+    ##  [91] pos neg neg neg neg neg pos neg pos neg neg neg neg neg neg neg pos neg
+    ## [109] neg neg neg pos neg neg neg neg neg pos neg neg neg neg pos pos pos neg
+    ## [127] neg neg neg neg neg neg pos neg pos neg neg neg neg neg pos neg pos neg
+    ## [145] pos pos neg neg neg neg pos neg neg pos neg neg neg neg neg neg neg neg
+    ## [163] neg neg neg pos neg neg pos neg neg neg neg pos pos neg pos neg neg neg
+    ## [181] neg neg neg neg pos neg pos pos neg pos neg neg
     ## Levels: neg pos
 
 ``` r
@@ -218,26 +230,26 @@ caret::confusionMatrix(predictions_nb_e1071, PimaIndiansDiabetes_test[, c("pregn
     ## 
     ##           Reference
     ## Prediction neg pos
-    ##        neg 100  23
-    ##        pos  25  44
+    ##        neg 113  32
+    ##        pos  12  35
     ##                                           
-    ##                Accuracy : 0.75            
-    ##                  95% CI : (0.6826, 0.8096)
+    ##                Accuracy : 0.7708          
+    ##                  95% CI : (0.7048, 0.8283)
     ##     No Information Rate : 0.651           
-    ##     P-Value [Acc > NIR] : 0.002076        
+    ##     P-Value [Acc > NIR] : 0.0002216       
     ##                                           
-    ##                   Kappa : 0.4536          
+    ##                   Kappa : 0.4581          
     ##                                           
-    ##  Mcnemar's Test P-Value : 0.885234        
+    ##  Mcnemar's Test P-Value : 0.0041786       
     ##                                           
-    ##             Sensitivity : 0.8000          
-    ##             Specificity : 0.6567          
-    ##          Pos Pred Value : 0.8130          
-    ##          Neg Pred Value : 0.6377          
+    ##             Sensitivity : 0.9040          
+    ##             Specificity : 0.5224          
+    ##          Pos Pred Value : 0.7793          
+    ##          Neg Pred Value : 0.7447          
     ##              Prevalence : 0.6510          
-    ##          Detection Rate : 0.5208          
-    ##    Detection Prevalence : 0.6406          
-    ##       Balanced Accuracy : 0.7284          
+    ##          Detection Rate : 0.5885          
+    ##    Detection Prevalence : 0.7552          
+    ##       Balanced Accuracy : 0.7132          
     ##                                           
     ##        'Positive' Class : neg             
     ## 
@@ -267,14 +279,14 @@ print(PimaIndiansDiabetes_model_nb_caret)
     ## Resampling results across tuning parameters:
     ## 
     ##   usekernel  Accuracy   Kappa    
-    ##   FALSE      0.7420136  0.4156647
-    ##    TRUE      0.7354723  0.4008799
+    ##   FALSE      0.7590731  0.4532743
+    ##    TRUE      0.7599405  0.4586532
     ## 
     ## Tuning parameter 'laplace' was held constant at a value of 0
     ## Tuning
     ##  parameter 'adjust' was held constant at a value of 1
     ## Accuracy was used to select the optimal model using the largest value.
-    ## The final values used for the model were laplace = 0, usekernel = FALSE
+    ## The final values used for the model were laplace = 0, usekernel = TRUE
     ##  and adjust = 1.
 
 ``` r
@@ -286,26 +298,26 @@ caret::confusionMatrix(predictions_nb_caret, PimaIndiansDiabetes_test[, c("pregn
     ## 
     ##           Reference
     ## Prediction neg pos
-    ##        neg 100  23
-    ##        pos  25  44
+    ##        neg 108  31
+    ##        pos  17  36
     ##                                           
     ##                Accuracy : 0.75            
     ##                  95% CI : (0.6826, 0.8096)
     ##     No Information Rate : 0.651           
     ##     P-Value [Acc > NIR] : 0.002076        
     ##                                           
-    ##                   Kappa : 0.4536          
+    ##                   Kappa : 0.4218          
     ##                                           
-    ##  Mcnemar's Test P-Value : 0.885234        
+    ##  Mcnemar's Test P-Value : 0.060602        
     ##                                           
-    ##             Sensitivity : 0.8000          
-    ##             Specificity : 0.6567          
-    ##          Pos Pred Value : 0.8130          
-    ##          Neg Pred Value : 0.6377          
+    ##             Sensitivity : 0.8640          
+    ##             Specificity : 0.5373          
+    ##          Pos Pred Value : 0.7770          
+    ##          Neg Pred Value : 0.6792          
     ##              Prevalence : 0.6510          
-    ##          Detection Rate : 0.5208          
-    ##    Detection Prevalence : 0.6406          
-    ##       Balanced Accuracy : 0.7284          
+    ##          Detection Rate : 0.5625          
+    ##    Detection Prevalence : 0.7240          
+    ##       Balanced Accuracy : 0.7007          
     ##                                           
     ##        'Positive' Class : neg             
     ## 
@@ -316,3 +328,178 @@ plot(table(predictions_nb_caret, PimaIndiansDiabetes_test[, c("pregnant", "gluco
 ```
 
 ![](Lab-Submission-Markdown_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+\## 5. Classification: SVM with Repeated k-fold Cross Validation —-
+
+### 5.a. SVM Classifier using 5-fold cross validation with 3 reps —-
+
+the support vector machine is trained with the purpose of classification
+using ’diabetes variable. we will use a 5-fold cross-validation train
+control with 3 reps
+
+``` r
+train_control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
+
+PimaIndiansDiabetes_model_svm <- caret::train(diabetes ~ ., data = PimaIndiansDiabetes_train,
+    trControl = train_control, na.action = na.omit, method = "svmLinearWeights2",
+    metric = "Accuracy")
+```
+
+### 5.b. Test the trained SVM model using the testing dataset —-
+
+``` r
+predictions_svm <- predict(PimaIndiansDiabetes_model_svm, PimaIndiansDiabetes_test[,
+    1:9])
+```
+
+### 5.c. View a summary of the model and view the confusion matrix —-
+
+``` r
+print(PimaIndiansDiabetes_model_svm)
+```
+
+    ## L2 Regularized Linear Support Vector Machines with Class Weights 
+    ## 
+    ## 576 samples
+    ##   8 predictor
+    ##   2 classes: 'neg', 'pos' 
+    ## 
+    ## No pre-processing
+    ## Resampling: Cross-Validated (5 fold, repeated 3 times) 
+    ## Summary of sample sizes: 461, 461, 460, 461, 461, 461, ... 
+    ## Resampling results across tuning parameters:
+    ## 
+    ##   cost  Loss  weight  Accuracy   Kappa     
+    ##   0.25  L1    1       0.6483058  0.09990756
+    ##   0.25  L1    2       0.6191154  0.12976006
+    ##   0.25  L1    3       0.5868316  0.08390882
+    ##   0.25  L2    1       0.7286057  0.34928716
+    ##   0.25  L2    2       0.6688106  0.33822493
+    ##   0.25  L2    3       0.4912644  0.12497952
+    ##   0.50  L1    1       0.6098301  0.07088747
+    ##   0.50  L1    2       0.5943628  0.12753140
+    ##   0.50  L1    3       0.6492154  0.13657081
+    ##   0.50  L2    1       0.7332284  0.36273528
+    ##   0.50  L2    2       0.6700250  0.34015914
+    ##   0.50  L2    3       0.4930035  0.12712835
+    ##   1.00  L1    1       0.6133383  0.07332974
+    ##   1.00  L1    2       0.5944878  0.09982781
+    ##   1.00  L1    3       0.5903548  0.08011460
+    ##   1.00  L2    1       0.7268816  0.34634400
+    ##   1.00  L2    2       0.6757871  0.35017243
+    ##   1.00  L2    3       0.4930035  0.12712835
+    ## 
+    ## Accuracy was used to select the optimal model using the largest value.
+    ## The final values used for the model were cost = 0.5, Loss = L2 and weight = 1.
+
+``` r
+caret::confusionMatrix(predictions_svm, PimaIndiansDiabetes_test$diabetes)
+```
+
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction neg pos
+    ##        neg 115  39
+    ##        pos  10  28
+    ##                                          
+    ##                Accuracy : 0.7448         
+    ##                  95% CI : (0.677, 0.8048)
+    ##     No Information Rate : 0.651          
+    ##     P-Value [Acc > NIR] : 0.003401       
+    ##                                          
+    ##                   Kappa : 0.3756         
+    ##                                          
+    ##  Mcnemar's Test P-Value : 6.334e-05      
+    ##                                          
+    ##             Sensitivity : 0.9200         
+    ##             Specificity : 0.4179         
+    ##          Pos Pred Value : 0.7468         
+    ##          Neg Pred Value : 0.7368         
+    ##              Prevalence : 0.6510         
+    ##          Detection Rate : 0.5990         
+    ##    Detection Prevalence : 0.8021         
+    ##       Balanced Accuracy : 0.6690         
+    ##                                          
+    ##        'Positive' Class : neg            
+    ## 
+
+## 6. Classification: Naive Bayes with Leave One Out Cross Validation—-
+
+In Leave One Out Cross-Validation (LOOCV), a data instance is left out
+and a model constructed on all other data instances in the training set.
+This is repeated for all data instances. \### 6.a. Train a Naive Bayes
+classifier based on an LOOCV —-
+
+``` r
+train_control <- trainControl(method = "LOOCV")
+
+PimaIndiansDiabetes_model_nb_loocv <- caret::train(diabetes ~ ., data = PimaIndiansDiabetes_train,
+    trControl = train_control, na.action = na.omit, method = "naive_bayes", metric = "Accuracy")
+```
+
+### 6.b. Test the trained model using the testing dataset ====
+
+``` r
+predictions_nb_loocv <- predict(PimaIndiansDiabetes_model_nb_loocv, PimaIndiansDiabetes_test[,
+    1:9])
+```
+
+### 6.c. View the confusion matrix ====
+
+``` r
+print(PimaIndiansDiabetes_model_nb_loocv)
+```
+
+    ## Naive Bayes 
+    ## 
+    ## 576 samples
+    ##   8 predictor
+    ##   2 classes: 'neg', 'pos' 
+    ## 
+    ## No pre-processing
+    ## Resampling: Leave-One-Out Cross-Validation 
+    ## Summary of sample sizes: 575, 575, 575, 575, 575, 575, ... 
+    ## Resampling results across tuning parameters:
+    ## 
+    ##   usekernel  Accuracy   Kappa    
+    ##   FALSE      0.7534722  0.4459212
+    ##    TRUE      0.7656250  0.4663153
+    ## 
+    ## Tuning parameter 'laplace' was held constant at a value of 0
+    ## Tuning
+    ##  parameter 'adjust' was held constant at a value of 1
+    ## Accuracy was used to select the optimal model using the largest value.
+    ## The final values used for the model were laplace = 0, usekernel = TRUE
+    ##  and adjust = 1.
+
+``` r
+caret::confusionMatrix(predictions_nb_loocv, PimaIndiansDiabetes_test$diabetes)
+```
+
+    ## Confusion Matrix and Statistics
+    ## 
+    ##           Reference
+    ## Prediction neg pos
+    ##        neg 108  31
+    ##        pos  17  36
+    ##                                           
+    ##                Accuracy : 0.75            
+    ##                  95% CI : (0.6826, 0.8096)
+    ##     No Information Rate : 0.651           
+    ##     P-Value [Acc > NIR] : 0.002076        
+    ##                                           
+    ##                   Kappa : 0.4218          
+    ##                                           
+    ##  Mcnemar's Test P-Value : 0.060602        
+    ##                                           
+    ##             Sensitivity : 0.8640          
+    ##             Specificity : 0.5373          
+    ##          Pos Pred Value : 0.7770          
+    ##          Neg Pred Value : 0.6792          
+    ##              Prevalence : 0.6510          
+    ##          Detection Rate : 0.5625          
+    ##    Detection Prevalence : 0.7240          
+    ##       Balanced Accuracy : 0.7007          
+    ##                                           
+    ##        'Positive' Class : neg             
+    ## 
