@@ -199,3 +199,48 @@ plot(table(predictions_nb_caret,
                                         "diabetes" 
            )]$diabetes))
 ```
+## 5. Classification: SVM with Repeated k-fold Cross Validation ----
+
+### 5.a. SVM Classifier using 5-fold cross validation with 3 reps ----
+the support vector machine is trained with the purpose of classification using 'diabetes variable. we will use a 5-fold cross-validation train control with 3 reps
+```{r}
+train_control <- trainControl(method = "repeatedcv", number = 5, repeats = 3)
+
+PimaIndiansDiabetes_model_svm <-
+  caret::train(`diabetes` ~ ., data = PimaIndiansDiabetes_train,
+               trControl = train_control, na.action = na.omit,
+               method = "svmLinearWeights2", metric = "Accuracy")
+```
+### 5.b. Test the trained SVM model using the testing dataset ----
+```{r}
+predictions_svm <- predict(PimaIndiansDiabetes_model_svm, PimaIndiansDiabetes_test[, 1:9])
+```
+### 5.c. View a summary of the model and view the confusion matrix ----
+```{r}
+print(PimaIndiansDiabetes_model_svm)
+caret::confusionMatrix(predictions_svm, PimaIndiansDiabetes_test$diabetes)
+```
+## 6. Classification: Naive Bayes with Leave One Out Cross Validation----
+In Leave One Out Cross-Validation (LOOCV), a data instance is left out and a model constructed on all other data instances in the training set. This is repeated for all data instances.
+### 6.a. Train a Naive Bayes classifier based on an LOOCV ----
+```{r}
+train_control <- trainControl(method = "LOOCV")
+
+PimaIndiansDiabetes_model_nb_loocv <-
+  caret::train(`diabetes` ~ ., data = PimaIndiansDiabetes_train,
+               trControl = train_control, na.action = na.omit,
+               method = "naive_bayes", metric = "Accuracy")
+```
+### 6.b. Test the trained model using the testing dataset ====
+```{r}
+predictions_nb_loocv <-
+  predict(PimaIndiansDiabetes_model_nb_loocv, PimaIndiansDiabetes_test[, 1:9])
+```
+### 6.c. View the confusion matrix ====
+```{r}
+print(PimaIndiansDiabetes_model_nb_loocv)
+caret::confusionMatrix(predictions_nb_loocv, PimaIndiansDiabetes_test$diabetes)
+```
+
+
+
