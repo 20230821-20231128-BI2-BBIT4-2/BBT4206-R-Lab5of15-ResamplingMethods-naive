@@ -1,0 +1,201 @@
+---
+title: "Business Intelligence Lab Submission Markdown"
+author: "naive"
+date: "4/10/2023"
+output:
+  github_document: 
+    toc: yes
+    toc_depth: 4
+    fig_width: 6
+    fig_height: 4
+    df_print: default
+editor_options:
+  chunk_output_type: console
+---
+
+# Student Details
+
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Student ID Numbers and Names of Group Members** | *\<list one student name, class group (just the letter; A, B, or C), and ID per line, e.g., 123456 - A - John Leposo; you should be between 2 and 5 members per group\>* |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 1.  135575 - B - Dennis Nzioki.                                                                                                                                             |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 2.  134645 - B - Vivean Lydiah                                                                                                                                             |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 3.  134765 - B - Nicholas Munene                                                                                                                                             |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 4.  131653- B - Terry Joan                                                                                                                                             |
+|                                                   |                                                                                                                                                                          |
+|                                                   | 5.  124428 - B - Eston Gichuhi                                                                                                                                              |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **GitHub Classroom Group Name**                   | *\<specify the name of the team you created on GitHub classroom\>*                                                                                                       |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Course Code**                                   | BBT4206                                                                                                                                                                  |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Course Name**                                   | Business Intelligence II                                                                                                                                                 |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Program**                                       | Bachelor of Business Information Technology                                                                                                                              |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Semester Duration**                             | 21^st^ August 2023 to 28^th^ November 2023                                                                                                                               |
++---------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+# Setup Chunk
+
+We start by installing all the required packages
+We start by installing all the required packages
+
+```{r Install Packages, echo=TRUE, message=FALSE, warning=FALSE}
+## formatR - Required to format R code in the markdown ----
+if (!is.element("formatR", installed.packages()[, 1])) {
+  install.packages("formatR", dependencies = TRUE,
+                   repos="https://cloud.r-project.org")
+}
+require("formatR")
+if (require("caret")) {
+  require("caret")
+} else {
+  install.packages("caret", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## klaR ----
+if (require("klaR")) {
+  require("klaR")
+} else {
+  install.packages("klaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## e1071 ----
+if (require("e1071")) {
+  require("e1071")
+} else {
+  install.packages("e1071", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## readr ----
+if (require("readr")) {
+  require("readr")
+} else {
+  install.packages("readr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## LiblineaR ----
+if (require("LiblineaR")) {
+  require("LiblineaR")
+} else {
+  install.packages("LiblineaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## naivebayes ----
+if (require("naivebayes")) {
+  require("naivebayes")
+} else {
+  install.packages("naivebayes", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+if (!is.element("mlbench", installed.packages()[, 1])) {
+     install.packages("mlbench", dependencies = TRUE)  #nolint
+  }
+  require("mlbench") #nolint
+```
+
+------------------------------------------------------------------------
+
+**Note:** the following "*KnitR*" options have been set as the defaults in this markdown:\
+`knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE, collapse = FALSE, tidy.opts = list(width.cutoff = 80), tidy = TRUE)`.
+
+More KnitR options are documented here <https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and here <https://yihui.org/knitr/options/>.
+
+```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+	eval = TRUE,
+	echo = TRUE,
+	warning = FALSE,
+	collapse = FALSE,
+	tidy = TRUE
+)
+```
+# DATASET 1 (Splitting the dataset): PimaIndians Diabetes
+```{r load dataset}
+data("PimaIndiansDiabetes")
+summary(PimaIndiansDiabetes)
+str(PimaIndiansDiabetes)
+```
+##Split the dataset:
+```{r split dataset}
+train_index <- createDataPartition(PimaIndiansDiabetes$diabetes,
+                                   p = 0.75,
+                                   list = FALSE)
+PimaIndiansDiabetes_train <- PimaIndiansDiabetes[train_index, ]
+PimaIndiansDiabetes_test <- PimaIndiansDiabetes[-train_index, ]
+```
+##Train a Naive Bayes classifier using the training dataset
+this can be done by using an naive bayes function in the e1071 package or the caret package
+```{r train naive}
+PimaIndiansDiabetes_model_nb_e1071 <- # nolint
+  e1071::naiveBayes(diabetes ~ pregnant + glucose + pressure + triceps + insulin + mass +
+                      pedigree + age,
+                    data = PimaIndiansDiabetes_train)
+PimaIndiansDiabetes_model_nb_caret <- # nolint
+  caret::train(diabetes ~ ., data =
+                 PimaIndiansDiabetes_train[, c("pregnant", "glucose", "pressure", "triceps", "insulin",
+                                               "mass", "pedigree", "age", "diabetes")],
+               method = "naive_bayes")
+```
+##Test the trained model using the testing dataset
+### 3.a. Test the trained e1071 Naive Bayes model using the testing dataset ----
+```{r}
+predictions_nb_e1071 <-
+  predict(PimaIndiansDiabetes_model_nb_e1071,
+          PimaIndiansDiabetes_test[, c("pregnant", "glucose", "pressure", "triceps", "insulin",
+                                               "mass", "pedigree", "age", "diabetes")])
+```
+### 3.b. Test the trained caret Naive Bayes model using the testing dataset ----
+```{r}
+predictions_nb_caret <-
+  predict(PimaIndiansDiabetes_model_nb_caret,
+          PimaIndiansDiabetes_test[, c("pregnant", "glucose", "pressure", "triceps", "insulin",
+                                       "mass", "pedigree", "age", "diabetes")])
+```
+## 4. View the Results ----
+### 4.a. e1071 Naive Bayes model and test results using a confusion matrix ----
+
+```{r}
+print(predictions_nb_e1071)
+caret::confusionMatrix(predictions_nb_e1071,
+                       PimaIndiansDiabetes_test[, c("pregnant", "glucose", "pressure",
+                                                  "triceps", "insulin", "mass",
+                                                  "pedigree",
+                                                  "age",
+                                                  "diabetes" 
+                                                  )]$diabetes)
+plot(table(predictions_nb_e1071,
+           PimaIndiansDiabetes_test[, c("pregnant", "glucose", "pressure",
+                                        "triceps", "insulin", "mass",
+                                        "pedigree",
+                                        "age",
+                                        "diabetes" 
+           )]$diabetes))
+```
+### 4.b. caret Naive Bayes model and test results using a confusion matrix ----
+```{r}
+print(PimaIndiansDiabetes_model_nb_caret)
+caret::confusionMatrix(predictions_nb_caret,
+                       PimaIndiansDiabetes_test[, c("pregnant", "glucose", "pressure",
+                                                    "triceps", "insulin", "mass",
+                                                    "pedigree",
+                                                    "age",
+                                                    "diabetes" 
+                       )]$diabetes)
+plot(table(predictions_nb_caret,
+           PimaIndiansDiabetes_test[, c("pregnant", "glucose", "pressure",
+                                        "triceps", "insulin", "mass",
+                                        "pedigree",
+                                        "age",
+                                        "diabetes" 
+           )]$diabetes))
+```
